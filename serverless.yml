@@ -1,0 +1,54 @@
+service: app
+
+provider:
+    name: aws
+    region: eu-central-1
+    runtime: provided.al2
+    timeout: 60
+    reservedConcurrency: 30
+    iamRoleStatements:
+        -   Effect: Allow
+            Action:
+                - dynamodb:Query
+                - dynamodb:Scan
+                - dynamodb:GetItem
+                - dynamodb:PutItem
+                - dynamodb:UpdateItem
+            Resource: 'arn:aws:dynamodb:eu-central-1:029121406052:table/cars'
+
+constructs:
+    pages_to_parse:
+        type: queue
+        batchSize: 1
+        maxRetries: 1
+        worker:
+            handler: src/PageParser.php
+            layers:
+                - ${bref:layer.php-80}
+            environment:
+                QUEUE_URL: '${construct:cars_to_parse.queueUrl}'
+    cars_to_parse:
+        type: queue
+        batchSize: 1
+        maxRetries: 1
+        worker:
+            handler: src/CarParser.php
+            layers:
+                - ${bref:layer.php-80}
+
+functions:
+    pages_parser:
+        handler: src/PagesParser.php
+        layers:
+            - ${bref:layer.php-80}
+        environment:
+            QUEUE_URL: '${construct:pages_to_parse.queueUrl}'
+
+# Exclude files from deployment
+package:
+    patterns:
+        - '!tests/**'
+
+plugins:
+    - ./vendor/bref/bref
+    - serverless-lift

@@ -1,0 +1,9 @@
+{
+  "name": "car-price-analysis",
+  "description": "",
+  "version": "0.1.0",
+  "devDependencies": {
+    "serverless": "^2.55.0",
+    "serverless-lift": "^1.5.0"
+  }
+}
