@@ -1,0 +1,11 @@
+version: 0.2
+
+phases:
+  install:
+    commands:
+      - yarn install
+      - composer install
+
+  build:
+    commands:
+      - ./node_modules/.bin/serverless deploy | tee deploy.out
