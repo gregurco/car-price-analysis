@@ -4,7 +4,6 @@ provider:
     name: aws
     region: eu-central-1
     runtime: provided.al2
-    timeout: 60
     iamRoleStatements:
         -   Effect: Allow
             Action:
@@ -26,6 +25,7 @@ constructs:
                 - ${bref:layer.php-80}
             environment:
                 QUEUE_URL: '${construct:cars_to_parse.queueUrl}'
+            timeout: 60
             reservedConcurrency: 20
     cars_to_parse:
         type: queue
@@ -35,6 +35,7 @@ constructs:
             handler: src/CarParser.php
             layers:
                 - ${bref:layer.php-80}
+            timeout: 60
             reservedConcurrency: 30
 
 functions:
@@ -44,6 +45,7 @@ functions:
             - ${bref:layer.php-80}
         environment:
             QUEUE_URL: '${construct:pages_to_parse.queueUrl}'
+        timeout: 60
 
 # Exclude files from deployment
 package:
