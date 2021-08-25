@@ -74,7 +74,7 @@ class CarParser extends AbstractParser implements Handler
             }
         });
 
-        if ($mileage && $year && $mileageKm > 1000) {
+        if ($this->isValidCar($mileage, $year, $mileageKm)) {
             $ages = 2021 - $year;
             $kmPerYear = floor($mileageKm / $ages);
 
@@ -97,6 +97,23 @@ class CarParser extends AbstractParser implements Handler
                 'year' => $year,
             ]);
         }
+    }
+
+    private function isValidCar(?string $mileage, ?string $year, ?int $mileageKm): bool
+    {
+        // Skip empty data
+        if (!$mileage || !$year) return false;
+
+        // Skipp fake old cars
+        if ($year <= 1935) return false;
+
+        // Fake mileage for old card
+        if ($mileageKm < 5000 && $year >= 2016) return false;
+
+        // Fake mileage
+        if ($mileageKm < 1000 || $mileageKm >= 1000000) return false;
+
+        return true;
     }
 }
 

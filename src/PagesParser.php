@@ -36,7 +36,7 @@ class PagesParser extends AbstractParser
 
     public function parse(?int $limit): void
     {
-        $response = $this->httpClient->request('GET', '/ru/list/transport/cars');
+        $response = $this->httpClient->request('GET', self::PAGE_PATH);
         $crowler = new Crawler($response->getContent());
         $lastPageLink = $crowler->filter('li.is-last-page > a')->first();
 

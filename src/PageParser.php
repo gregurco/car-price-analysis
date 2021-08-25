@@ -51,7 +51,7 @@ class PageParser extends AbstractParser implements Handler
 
     private function parsePage(int $pageNumber): void
     {
-        $response = $this->httpClient->request('GET', '/ru/list/transport/cars?page=' . $pageNumber);
+        $response = $this->httpClient->request('GET', self::PAGE_PATH . '&page=' . $pageNumber);
 
         $crawler = new Crawler($response->getContent());
         $crawler->filter(self::CARS_SELECTOR)->each(function(Crawler $node) {

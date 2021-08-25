@@ -14,6 +14,8 @@ abstract class AbstractParser implements Handler
 
     protected const HOST = 'https://999.md';
 
+    protected const PAGE_PATH = '/ru/list/transport/cars?o_260_1=776&hide_duplicates=yes&o_2029_593=18672&o_2029_593=18668';
+
     protected Logger $logger;
 
     protected HttpClientInterface $httpClient;
