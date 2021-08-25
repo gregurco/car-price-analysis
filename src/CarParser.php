@@ -17,6 +17,8 @@ require __DIR__ . '/../vendor/autoload.php';
 
 class CarParser extends AbstractParser implements Handler
 {
+    use SqsHandlerTrait;
+
     private DynamoDbClient $dynamoDb;
 
     public function __construct()
@@ -44,11 +46,6 @@ class CarParser extends AbstractParser implements Handler
 
             $this->parseCar((int)$body['car_id']);
         }
-    }
-
-    public function handle($event, Context $context): void
-    {
-        $this->handleSqs(new SqsEvent($event), $context);
     }
 
     private function parseCar(int $carId): void
@@ -82,7 +79,7 @@ class CarParser extends AbstractParser implements Handler
             $kmPerYear = floor($mileageKm / $ages);
 
             $this->dynamoDb->putItem(new PutItemInput([
-                'TableName' => 'cars',
+                'TableName' => $_ENV['CARS_TABLE'],
                 'Item' => [
                     'car_id' => new AttributeValue(['S' => (string)$carId]),
                     'year' => new AttributeValue(['N' => $year]),

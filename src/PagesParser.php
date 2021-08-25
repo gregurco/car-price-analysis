@@ -6,6 +6,7 @@ use AsyncAws\Core\Configuration;
 use AsyncAws\Core\Credentials\ConfigurationProvider;
 use AsyncAws\Sqs\Input\SendMessageRequest;
 use AsyncAws\Sqs\SqsClient;
+use Bref\Context\Context;
 use Symfony\Component\DomCrawler\Crawler;
 use Symfony\Component\HttpClient\HttpClient;
 
@@ -27,7 +28,13 @@ class PagesParser extends AbstractParser
         );
     }
 
-    public function parse(): void
+    public function handle($event, Context $context)
+    {
+        $this->wait();
+        $this->parse($event['limit'] ?? null);
+    }
+
+    public function parse(?int $limit): void
     {
         $response = $this->httpClient->request('GET', '/ru/list/transport/cars');
         $crowler = new Crawler($response->getContent());
@@ -40,6 +47,7 @@ class PagesParser extends AbstractParser
         parse_str(parse_url($lastPageLink->attr('href'), PHP_URL_QUERY), $queryParams);
 
         $lastPage = (int)$queryParams['page'];
+        $lastPage = $limit ?? $lastPage; // Manual limit from event
 
         $this->logger->debug('Result', ['pages' => $lastPage]);
 
@@ -54,8 +62,4 @@ class PagesParser extends AbstractParser
     }
 }
 
-return function ($event) {
-    $parser = new PagesParser();
-    $parser->wait();
-    $parser->parse();
-};
+return new PagesParser();

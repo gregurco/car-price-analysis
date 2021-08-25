@@ -16,6 +16,8 @@ require __DIR__ . '/../vendor/autoload.php';
 
 class PageParser extends AbstractParser implements Handler
 {
+    use SqsHandlerTrait;
+
     private const CARS_SELECTOR = '.ads-list-photo-item:not(.js-booster-inline) > .ads-list-photo-item-title > a';
 
     private SqsClient $sqsClient;
@@ -45,11 +47,6 @@ class PageParser extends AbstractParser implements Handler
 
             $this->parsePage((int)$body['page_number']);
         }
-    }
-
-    public function handle($event, Context $context): void
-    {
-        $this->handleSqs(new SqsEvent($event), $context);
     }
 
     private function parsePage(int $pageNumber): void

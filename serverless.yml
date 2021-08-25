@@ -4,6 +4,9 @@ provider:
     name: aws
     region: eu-central-1
     runtime: provided.al2
+    environment:
+        CARS_TABLE:
+            Ref: cars
     iamRoleStatements:
         -   Effect: Allow
             Action:
@@ -12,7 +15,25 @@ provider:
                 - dynamodb:GetItem
                 - dynamodb:PutItem
                 - dynamodb:UpdateItem
-            Resource: 'arn:aws:dynamodb:eu-central-1:029121406052:table/cars'
+            # Resource: 'arn:aws:dynamodb:eu-central-1:029121406052:table/cars'
+            Resource:
+                - "Fn::GetAtt": [cars, Arn]
+
+resources: # CloudFormation template syntax from here on.
+    Resources:
+        usersTable:
+            Type: AWS::DynamoDB::Table
+            Properties:
+                TableName: cars
+                AttributeDefinitions:
+                    - AttributeName: car_id
+                      AttributeType: S
+                KeySchema:
+                    - AttributeName: car_id
+                      KeyType: "HASH"
+                ProvisionedThroughput:
+                    ReadCapacityUnits: 5
+                    WriteCapacityUnits: 5
 
 constructs:
     pages_to_parse:
@@ -27,6 +48,7 @@ constructs:
                 QUEUE_URL: '${construct:cars_to_parse.queueUrl}'
             timeout: 60
             reservedConcurrency: 20
+            #  memorySize: 512
     cars_to_parse:
         type: queue
         batchSize: 1

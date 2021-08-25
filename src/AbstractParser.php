@@ -2,12 +2,13 @@
 
 namespace App;
 
+use Bref\Event\Handler;
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
 use Symfony\Component\HttpClient\HttpClient;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
-abstract class AbstractParser
+abstract class AbstractParser implements Handler
 {
     protected const AWS_REGION = 'eu-central-1';
 
