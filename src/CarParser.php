@@ -76,7 +76,7 @@ class CarParser extends AbstractParser implements Handler
 
         if ($this->isValidCar($mileage, $year, $mileageKm)) {
             $ages = 2021 - $year;
-            $kmPerYear = (int)floor($mileageKm / $ages);
+            $kmPerYear = $ages ? (int)floor($mileageKm / $ages) : $mileageKm;
 
             $this->dynamoDb->putItem(new PutItemInput([
                 'TableName' => $_ENV['CARS_TABLE'],
