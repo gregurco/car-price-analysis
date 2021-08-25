@@ -5,7 +5,6 @@ provider:
     region: eu-central-1
     runtime: provided.al2
     timeout: 60
-    reservedConcurrency: 30
     iamRoleStatements:
         -   Effect: Allow
             Action:
@@ -27,6 +26,7 @@ constructs:
                 - ${bref:layer.php-80}
             environment:
                 QUEUE_URL: '${construct:cars_to_parse.queueUrl}'
+            reservedConcurrency: 20
     cars_to_parse:
         type: queue
         batchSize: 1
@@ -35,6 +35,7 @@ constructs:
             handler: src/CarParser.php
             layers:
                 - ${bref:layer.php-80}
+            reservedConcurrency: 30
 
 functions:
     pages_parser:
