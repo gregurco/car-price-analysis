@@ -8,4 +8,4 @@ phases:
 
   build:
     commands:
-      - ./node_modules/.bin/serverless deploy | tee deploy.out
+      - ./node_modules/.bin/serverless deploy
