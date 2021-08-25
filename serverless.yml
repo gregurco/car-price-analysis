@@ -6,7 +6,7 @@ provider:
     runtime: provided.al2
     environment:
         CARS_TABLE:
-            Ref: cars
+            Ref: usersTable
     iamRoleStatements:
         -   Effect: Allow
             Action:
@@ -17,7 +17,7 @@ provider:
                 - dynamodb:UpdateItem
             # Resource: 'arn:aws:dynamodb:eu-central-1:029121406052:table/cars'
             Resource:
-                - "Fn::GetAtt": [cars, Arn]
+                - "Fn::GetAtt": [usersTable, Arn]
 
 resources: # CloudFormation template syntax from here on.
     Resources:
