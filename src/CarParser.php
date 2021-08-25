@@ -67,7 +67,7 @@ class CarParser extends AbstractParser implements Handler
 
                 $mileageKm = (int)str_replace(' ', '', $mileage);
                 if (str_contains($mileage, 'mi')) {
-                    $mileageKm *= 1.60934;
+                    $mileageKm = (int)floor($mileageKm * 1.60934);
                 }
             } elseif ($key === 'Год выпуска') {
                 $year = trim($node->filter('.adPage__content__features__value')->text());
@@ -76,7 +76,7 @@ class CarParser extends AbstractParser implements Handler
 
         if ($this->isValidCar($mileage, $year, $mileageKm)) {
             $ages = 2021 - $year;
-            $kmPerYear = floor($mileageKm / $ages);
+            $kmPerYear = (int)floor($mileageKm / $ages);
 
             $this->dynamoDb->putItem(new PutItemInput([
                 'TableName' => $_ENV['CARS_TABLE'],
