@@ -15,7 +15,6 @@ provider:
                 - dynamodb:GetItem
                 - dynamodb:PutItem
                 - dynamodb:UpdateItem
-            # Resource: 'arn:aws:dynamodb:eu-central-1:029121406052:table/cars'
             Resource:
                 - "Fn::GetAtt": [usersTable, Arn]
 
@@ -47,8 +46,8 @@ constructs:
             environment:
                 QUEUE_URL: '${construct:cars_to_parse.queueUrl}'
             timeout: 60
-            reservedConcurrency: 20
-            #  memorySize: 512
+            reservedConcurrency: 15
+            memorySize: 128
     cars_to_parse:
         type: queue
         batchSize: 1
@@ -57,8 +56,9 @@ constructs:
             handler: src/CarParser.php
             layers:
                 - ${bref:layer.php-80}
-            timeout: 60
-            reservedConcurrency: 30
+            timeout: 30
+            reservedConcurrency: 20
+            memorySize: 128
 
 functions:
     pages_parser:
@@ -68,6 +68,7 @@ functions:
         environment:
             QUEUE_URL: '${construct:pages_to_parse.queueUrl}'
         timeout: 60
+        memorySize: 128
 
 # Exclude files from deployment
 package:

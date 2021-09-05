@@ -37,8 +37,6 @@ class PageParser extends AbstractParser implements Handler
     public function handleSqs(SqsEvent $event, Context $context): void
     {
         foreach ($event->getRecords() as $record) {
-            $this->wait();
-
             $body = json_decode($record->getBody(), true);
 
             if (!array_key_exists('page_number', $body) || empty($body['page_number'])) {

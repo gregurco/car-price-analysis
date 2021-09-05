@@ -29,9 +29,4 @@ abstract class AbstractParser implements Handler
         $this->logger = new Logger('main');
         $this->logger->pushHandler(new StreamHandler('php://stderr'));
     }
-
-    public function wait(): void
-    {
-        sleep(rand(1, 10));
-    }
 }

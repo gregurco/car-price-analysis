@@ -30,7 +30,6 @@ class PagesParser extends AbstractParser
 
     public function handle($event, Context $context)
     {
-        $this->wait();
         $this->parse($event['limit'] ?? null);
     }
 

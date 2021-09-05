@@ -3,9 +3,19 @@
 ## Install 
 
 ```
-npm install -g serverless
+yarn install
 
-serverless plugin install -n serverless-lift
+composer install
+```
 
-serverless deploy
+## Deploy
+
+```
+node_modules/.bin/serverless deploy
+```
+
+## Prepare data
+
+```
+aws dynamodb scan --table-name cars > export.json
 ```

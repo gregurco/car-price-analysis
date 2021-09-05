@@ -36,8 +36,6 @@ class CarParser extends AbstractParser implements Handler
     public function handleSqs(SqsEvent $event, Context $context): void
     {
         foreach ($event->getRecords() as $record) {
-            $this->wait();
-
             $body = json_decode($record->getBody(), true);
 
             if (!array_key_exists('car_id', $body) || empty($body['car_id'])) {
@@ -52,7 +50,18 @@ class CarParser extends AbstractParser implements Handler
     {
         $this->logger->debug('Parse car: ' . $carId);
 
-        $response = $this->httpClient->request('GET', self::HOST . '/ru/' . $carId);
+        $response = $this->httpClient->request('GET', self::HOST . '/ru/' . $carId, [
+            'timeout' => 15,
+            'verify_host' => false,
+            'verify_peer' => false,
+        ]);
+
+        if ($response->getStatusCode() === 404) {
+            $this->logger->debug(sprintf('Car %d was removed. Response 404.', $carId));
+
+            return;
+        }
+
         $crowler = new Crawler($response->getContent());
 
         $mileage = null;
