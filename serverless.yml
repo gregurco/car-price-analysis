@@ -47,7 +47,7 @@ constructs:
                 QUEUE_URL: '${construct:cars_to_parse.queueUrl}'
             timeout: 60
             reservedConcurrency: 15
-            memorySize: 128
+            memorySize: 512
     cars_to_parse:
         type: queue
         batchSize: 1
@@ -58,7 +58,7 @@ constructs:
                 - ${bref:layer.php-80}
             timeout: 30
             reservedConcurrency: 20
-            memorySize: 128
+            memorySize: 512
 
 functions:
     pages_parser:
@@ -68,7 +68,7 @@ functions:
         environment:
             QUEUE_URL: '${construct:pages_to_parse.queueUrl}'
         timeout: 60
-        memorySize: 128
+        memorySize: 512
 
 # Exclude files from deployment
 package:
