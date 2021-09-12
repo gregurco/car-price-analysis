@@ -30,9 +30,7 @@ resources: # CloudFormation template syntax from here on.
                 KeySchema:
                     - AttributeName: car_id
                       KeyType: "HASH"
-                ProvisionedThroughput:
-                    ReadCapacityUnits: 5
-                    WriteCapacityUnits: 5
+                BillingMode: PAY_PER_REQUEST
 
 constructs:
     pages_to_parse:
@@ -57,7 +55,7 @@ constructs:
             layers:
                 - ${bref:layer.php-80}
             timeout: 30
-            reservedConcurrency: 20
+            reservedConcurrency: 15
             memorySize: 512
 
 functions:
